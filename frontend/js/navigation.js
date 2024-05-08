@@ -46,4 +46,7 @@ $(document).ready(function () {
 	$('#registration-nav').click(function (event) {
 		handleNavigationClick(event, 'registration');
 	});
+	$('#shoppingcart-nav').click(function (event) {
+		handleNavigationClick(event, 'carts');
+	});
 });
