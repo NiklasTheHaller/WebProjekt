@@ -1,17 +1,17 @@
 <div class="container">
 	<div class="row justify-content-center">
 		<div class="col-md-6">
-			<div class="custom-box mx-auto my-5">
-				<form class="container mt-4" method="post">
+			<div class="custom-box my-5">
+				<form class="container mt-4" id="registration-form" novalidate>
 					<div class="row mb-3">
 						<img
 							class="mb-4 logo col-3"
 							src="res/img/gymnius_logo.png"
 							alt="Gymnius Logo" />
-						<h1 class="h3 mb-3 fw-normal col mt-5">Please sign in</h1>
+						<h1 class="h3 mb-3 fw-normal col mt-5">Registration</h1>
 					</div>
 
-					<div class="mb-3">
+					<div class="mb-3 form-group">
 						<div class="form-floating mb-3">
 							<select class="form-control" id="title" name="title" required>
 								<option value="Mr.">Mr.</option>
@@ -19,29 +19,37 @@
 							</select>
 							<label for="title">Title</label>
 						</div>
+					</div>
 
-						<div class="form-floating mb-3">
-							<input
-								type="text"
-								class="form-control"
-								id="firstname"
-								name="firstname"
-								placeholder="John"
-								required />
-							<label for="firstname">First name</label>
+					<div class="row g-2">
+						<div class="col-md form-group">
+							<div class="form-floating mb-3">
+								<input
+									type="text"
+									class="form-control"
+									id="firstname"
+									name="firstname"
+									placeholder="John"
+									required />
+								<label for="firstname">First name</label>
+							</div>
 						</div>
 
-						<div class="form-floating mb-3">
-							<input
-								type="text"
-								class="form-control"
-								id="lastname"
-								name="lastname"
-								placeholder="Doe"
-								required />
-							<label for="lastname">Last name</label>
+						<div class="col-md form-group">
+							<div class="form-floating mb-3">
+								<input
+									type="text"
+									class="form-control"
+									id="lastname"
+									name="lastname"
+									placeholder="Doe"
+									required />
+								<label for="lastname">Last name</label>
+							</div>
 						</div>
+					</div>
 
+					<div class="form-group">
 						<div class="form-floating mb-3">
 							<input
 								type="text"
@@ -52,29 +60,37 @@
 								required />
 							<label for="address">Address</label>
 						</div>
+					</div>
 
-						<div class="form-floating mb-3">
-							<input
-								type="text"
-								class="form-control"
-								id="zipcode"
-								name="zipcode"
-								placeholder="123456"
-								required />
-							<label for="zipcode">Zip Code</label>
+					<div class="row g-2">
+						<div class="col form-group">
+							<div class="form-floating mb-3">
+								<input
+									type="text"
+									class="form-control"
+									id="zipcode"
+									name="zipcode"
+									placeholder="123456"
+									required />
+								<label for="zipcode">Zip Code</label>
+							</div>
 						</div>
 
-						<div class="form-floating mb-3">
-							<input
-								type="text"
-								class="form-control"
-								id="city"
-								name="city"
-								placeholder="City"
-								required />
-							<label for="city">City</label>
+						<div class="col form-group">
+							<div class="form-floating mb-3">
+								<input
+									type="text"
+									class="form-control"
+									id="city"
+									name="city"
+									placeholder="City"
+									required />
+								<label for="city">City</label>
+							</div>
 						</div>
+					</div>
 
+					<div class="form-group">
 						<div class="form-floating mb-3">
 							<input
 								type="email"
@@ -85,7 +101,9 @@
 								required />
 							<label for="email">Email address</label>
 						</div>
+					</div>
 
+					<div class="form-group">
 						<div class="form-floating mb-3">
 							<input
 								type="text"
@@ -96,7 +114,9 @@
 								required />
 							<label for="username">Username</label>
 						</div>
+					</div>
 
+					<div class="form-group">
 						<div class="form-floating mb-3">
 							<input
 								type="password"
@@ -107,30 +127,34 @@
 								required />
 							<label for="password">Password</label>
 						</div>
+					</div>
 
+					<div class="form-group">
 						<div class="form-floating mb-3">
 							<input
 								type="password"
 								class="form-control"
 								id="confirm-password"
-								name="confirm-password"
+								name="confirm_password"
 								placeholder="Re-enter Password"
 								required />
 							<label for="confirm-password">Re-enter password</label>
 						</div>
+					</div>
 
-						<div class="mb-3">
-							<button class="btn btn-primary w-100 py-2" type="submit">
-								Register
-							</button>
-						</div>
+					<div class="mb-3">
+						<button class="btn btn-primary w-100 py-2" type="submit">
+							Register
+						</button>
+					</div>
 
-						<div class="mb-3">
-							<p class="mt-5 mb-3 text-muted">© 2024 Gymnius GmbH</p>
-						</div>
+					<div class="mb-3">
+						<p class="mt-5 mb-3 text-muted">© 2024 Gymnius GmbH</p>
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
 </div>
+
+<script src="../frontend/js/registration.js"></script>

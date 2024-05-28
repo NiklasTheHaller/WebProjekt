@@ -59,7 +59,7 @@
 								aria-label="Search" />
 						</form>
 
-						<div class="text-end">
+						<div id="auth-buttons" class="text-end">
 							<button
 								id="login-nav"
 								type="button"
@@ -73,7 +73,10 @@
 								Sign-up
 							</button>
 						</div>
-						<div class="dropdown text-end ms-3">
+						<div
+							id="user-dropdown"
+							class="dropdown text-end ms-3"
+							style="display: none">
 							<a
 								href="#"
 								class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
@@ -87,11 +90,17 @@
 									class="rounded-circle" />
 							</a>
 							<ul class="dropdown-menu text-small">
-								<li><a class="dropdown-item" href="#">Shopping Cart</a></li>
+								<li>
+									<a id="shoppingcart-nav" class="dropdown-item" href="#"
+										>Shopping Cart</a
+									>
+								</li>
 								<li><a class="dropdown-item" href="#">Your Orders</a></li>
 								<li><a class="dropdown-item" href="#">Profile</a></li>
 								<li><hr class="dropdown-divider" /></li>
-								<li><a class="dropdown-item" href="#">Sign out</a></li>
+								<li>
+									<a id="sign-out" class="dropdown-item" href="#">Sign out</a>
+								</li>
 							</ul>
 						</div>
 					</div>
