@@ -7,7 +7,7 @@ class admin
     public $role;
     public $fk_userid;
 
-    public function __construct($id, $role, $fk_userid)
+    public function __construct(int $id, string $role, int $fk_userid)
     {
         $this->id = $id;
         $this->role = $role;

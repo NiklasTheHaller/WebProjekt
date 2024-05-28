@@ -1,5 +1,4 @@
 $(document).ready(function () {
-	console.log('ajax about to happen');
 	const productIds = [1, 2, 3]; // Array of product IDs
 
 	// Map each product ID to a fetch operation returning a promise

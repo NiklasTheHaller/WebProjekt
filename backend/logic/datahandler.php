@@ -30,6 +30,23 @@ class DataHandler
         return $stmt->fetch(PDO::FETCH_OBJ);
     }
 
+    public function getUserByEmail($email)
+    {
+        $sql = "SELECT * FROM user WHERE email = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$email]);
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+    public function getUserByUsername($username)
+    {
+        $sql = "SELECT * FROM user WHERE username = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$username]);
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+
     public function updateUser($user)
     {
         $sql = "UPDATE user SET salutation = ?, firstname = ?, lastname = ?, address = ?, zipcode = ?, city = ?, email = ?, username = ?, password = ?, status = ? WHERE id = ?";
