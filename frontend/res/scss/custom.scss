@@ -1,4 +1,6 @@
 // Custom.scss
+
+// frontend/res/scss/custom.scs
 // Option A: Include all of Bootstrap
 
 // Include any default variable overrides here (though functions won't be available)
@@ -43,4 +45,17 @@ $info: #d45f07;
 #navbar-search::-ms-input-placeholder {
 	/* Microsoft Edge */
 	color: white;
+}
+
+.category-card {
+	width: 100%;
+	height: 250px; /* Adjust the height as needed */
+	overflow: hidden;
+	position: relative;
+}
+
+.category-card .category-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover; /* Ensures the image covers the entire area without distortion */
 }

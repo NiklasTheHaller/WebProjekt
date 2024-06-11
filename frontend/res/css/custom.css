@@ -11872,4 +11872,17 @@ textarea.form-control-lg {
   color: white;
 }
 
+.category-card {
+  width: 100%;
+  height: 250px; /* Adjust the height as needed */
+  overflow: hidden;
+  position: relative;
+}
+
+.category-card .category-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the image covers the entire area without distortion */
+}
+
 /*# sourceMappingURL=custom.css.map */

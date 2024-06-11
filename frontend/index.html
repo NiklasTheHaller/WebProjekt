@@ -9,6 +9,7 @@
 		<script src="res/bootstrap_files/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="js/jquery.js"></script>
 		<script src="js/navigation.js"></script>
+		<script src="js/globalFunctions.js"></script>
 	</head>
 	<body>
 		<!-- Header -->
@@ -95,8 +96,14 @@
 										>Shopping Cart</a
 									>
 								</li>
-								<li><a class="dropdown-item" href="#">Your Orders</a></li>
-								<li><a class="dropdown-item" href="#">Profile</a></li>
+								<li>
+									<a id="orders-nav" class="dropdown-item" href="#"
+										>Your Orders</a
+									>
+								</li>
+								<li>
+									<a id="profile-nav" class="dropdown-item" href="#">Profile</a>
+								</li>
 								<li><hr class="dropdown-divider" /></li>
 								<li>
 									<a id="sign-out" class="dropdown-item" href="#">Sign out</a>
