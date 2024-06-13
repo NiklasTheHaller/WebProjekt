@@ -1,10 +1,11 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 require_once '../../logic/datahandler.php';
 
 header('Content-Type: application/json');
-
-session_start();
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -16,6 +17,7 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $dataHandler = new DataHandler();
 $user = $dataHandler->getUserById($user_id);
+$role = $dataHandler->getAdminRole($user_id);
 
 $mask = isset($_GET['mask']) ? filter_var($_GET['mask'], FILTER_VALIDATE_BOOLEAN) : true;
 
@@ -31,7 +33,8 @@ if ($user) {
             'address' => $mask ? maskAddress($user->address) : $user->address,
             'zipcode' => $user->zipcode,
             'city' => $user->city,
-            'payment_method' => $user->payment_method
+            'payment_method' => $user->payment_method,
+            'role' => $role ? $role : 'Customer'
         ]
     ]);
 } else {

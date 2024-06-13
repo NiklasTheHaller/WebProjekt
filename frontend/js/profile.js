@@ -56,7 +56,6 @@ $(document).ready(function () {
 		$('#cancel-profile-btn').hide();
 		$('#edit-profile-btn').show();
 	}
-
 	// Form submission for profile update
 	$('#profile-form').on('submit', function (event) {
 		event.preventDefault();
@@ -111,6 +110,7 @@ $(document).ready(function () {
 					$('#zipcode').val(user.zipcode);
 					$('#city').val(user.city);
 					$('#payment_method').val(user.payment_method);
+					$('#account-status').text('Account status: ' + user.role);
 				} else {
 					alert('Failed to fetch user data.');
 				}

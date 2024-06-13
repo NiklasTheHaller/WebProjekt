@@ -1,51 +1,3 @@
-function fetchOrderDetails(orderId) {
-	$.ajax({
-		url: '../backend/public/api/get_order_details.php',
-		type: 'GET',
-		data: { order_id: orderId },
-		success: function (response) {
-			if (response.status === 'success') {
-				var order = response.order;
-				var orderItems = response.order_items;
-
-				// Display order information
-				var orderInfoTableBody = $('#order-info-table tbody');
-				orderInfoTableBody.empty(); // Clear any existing rows
-
-				var orderInfo = `
-                    <tr><td>Order ID</td><td>${order.order_id}</td></tr>
-                    <tr><td>Date</td><td>${order.order_date}</td></tr>
-                    <tr><td>Status</td><td>${order.order_status}</td></tr>
-                    <tr><td>Total Price</td><td>€${order.total_price}</td></tr>
-                    <tr><td>Shipping Address</td><td>${order.shipping_address}</td></tr>
-                    <tr><td>Billing Address</td><td>${order.billing_address}</td></tr>
-                    <tr><td>Payment Method</td><td>${order.payment_method}</td></tr>
-                    <tr><td>Shipping Cost</td><td>€${order.shipping_cost}</td></tr>
-                    <tr><td>Tracking Number</td><td>${order.tracking_number}</td></tr>
-                    <tr><td>Discount</td><td>${order.discount}</td></tr>
-                `;
-				orderInfoTableBody.append(orderInfo);
-
-				// Display order items
-				var orderItemsTableBody = $('#order-items-table tbody');
-				orderItemsTableBody.empty(); // Clear any existing rows
-				orderItems.forEach(function (item) {
-					var row = $('<tr>');
-					row.append($('<td>').text(item.fk_product_id));
-					row.append($('<td>').text(item.quantity));
-					row.append($('<td>').text('€' + item.subtotal));
-					orderItemsTableBody.append(row);
-				});
-			} else {
-				alert('Failed to fetch order details.');
-			}
-		},
-		error: function (xhr, status, error) {
-			alert('An error occurred: ' + xhr.responseText);
-		},
-	});
-}
-
 $(document).ready(function () {
 	// Check if the user is already logged in
 	checkLoginStatus();
@@ -137,6 +89,12 @@ $(document).ready(function () {
 		handleNavigationClick(event, 'profile');
 	});
 
+	// admin button
+
+	$('#admin-nav').click(function (event) {
+		handleNavigationClick(event, 'admin');
+	});
+
 	// Sign out button
 	$('#sign-out').click(function (event) {
 		event.preventDefault();
@@ -154,16 +112,42 @@ $(document).ready(function () {
 	function updateUIForLoggedInUser() {
 		$('#auth-buttons').hide();
 		$('#user-dropdown').show();
+
+		if (
+			sessionStorage.getItem('is_admin') === 'true' ||
+			getCookie('is_admin') === 'true'
+		) {
+			$('#admin-dropdown').show();
+		}
 	}
+
+	// Add an AJAX call to fetch session data
+	$.ajax({
+		url: '../backend/public/api/get_session_data.php',
+		type: 'GET',
+		success: function (response) {
+			if (response.status === 'success') {
+				sessionStorage.setItem('is_admin', response.is_admin);
+				updateUIForLoggedInUser();
+			}
+		},
+		error: function (xhr, status, error) {
+			console.error('Error fetching session data:', error);
+		},
+	});
 
 	// Function to sign out user
 	function signOutUser() {
 		sessionStorage.removeItem('userLoggedIn');
+		sessionStorage.removeItem('is_admin');
 		document.cookie = 'user_id=; Max-Age=-99999999; path=/'; // Delete the cookie
+		document.cookie = 'is_admin=; Max-Age=-99999999; path=/'; // Delete the cookie
+		document.cookie = 'admin_role=; Max-Age=-99999999; path=/'; // Delete the cookie
 
 		// Update the UI to show login and sign-up buttons
 		$('#auth-buttons').show();
 		$('#user-dropdown').hide();
+		$('#admin-dropdown').hide();
 
 		// Optionally, you can navigate to the homepage or login page
 		handleNavigationClick(new Event('click'), 'homepage');

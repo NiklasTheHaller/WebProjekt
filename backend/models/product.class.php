@@ -1,6 +1,6 @@
 <?php
 
-class product
+class Product
 {
     public $product_id;
     public $product_name;
@@ -11,7 +11,7 @@ class product
     public $product_category;
     public $product_imagepath;
 
-    public function __construct($product_id, $product_name, $product_description, $product_price, $product_weight, $product_quantity, $product_category, $product_imagepath)
+    public function __construct(int $product_id, string $product_name, string $product_description, float $product_price, float $product_weight, int $product_quantity, string $product_category, string $product_imagepath)
     {
         $this->product_id = $product_id;
         $this->product_name = $product_name;

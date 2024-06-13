@@ -1,29 +1,48 @@
 <div class="container">
-	<h1>Order Details</h1>
-	<table class="table table-bordered" id="order-info-table">
-		<thead>
-			<tr>
-				<th>Field</th>
-				<th>Details</th>
-			</tr>
-		</thead>
-		<tbody>
-			<!-- Order information will be dynamically inserted here -->
-		</tbody>
-	</table>
-	<h2>Order Items</h2>
-	<table class="table table-striped" id="order-items-table">
-		<thead>
-			<tr>
-				<th>Product ID</th>
-				<th>Quantity</th>
-				<th>Subtotal</th>
-			</tr>
-		</thead>
-		<tbody>
-			<!-- Order items will be dynamically inserted here -->
-		</tbody>
-	</table>
+	<div class="row mt-3">
+		<div class="col-12">
+			<h2 class="mb-3">Order Details</h2>
+			<div id="order-details-container">
+				<!-- Order Info Table -->
+				<table id="order-info-table" class="table table-bordered">
+					<thead>
+						<tr>
+							<th colspan="2">Order Information</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Order information will be dynamically added here -->
+					</tbody>
+				</table>
+
+				<!-- Financial Info Table -->
+				<table id="financial-info-table" class="table table-bordered">
+					<thead>
+						<tr>
+							<th colspan="2">Financial Information</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Financial information will be dynamically added here -->
+					</tbody>
+				</table>
+
+				<!-- Order Items Table -->
+				<table id="order-items-table" class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Product Name</th>
+							<th>Quantity</th>
+							<th>Subtotal</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Order items will be dynamically added here -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script src="../frontend/js/orders.js"></script>

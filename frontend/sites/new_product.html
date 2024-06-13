@@ -1,0 +1,74 @@
+<div class="container">
+	<div class="row">
+		<div class="col-12">
+			<h3 class="my-5">Add New Product</h3>
+			<form id="new-product-form">
+				<div class="mb-3">
+					<label for="product_name" class="form-label">Product Name</label>
+					<input type="text" class="form-control" id="product_name" required />
+				</div>
+				<div class="mb-3">
+					<label for="product_description" class="form-label"
+						>Product Description</label
+					>
+					<textarea
+						class="form-control"
+						id="product_description"
+						rows="3"
+						required></textarea>
+				</div>
+				<div class="mb-3">
+					<label for="product_price" class="form-label"
+						>Product Price (€)</label
+					>
+					<input
+						type="number"
+						class="form-control"
+						id="product_price"
+						step="0.01"
+						required />
+				</div>
+				<div class="mb-3">
+					<label for="product_weight" class="form-label"
+						>Product Weight (kg)</label
+					>
+					<input
+						type="number"
+						class="form-control"
+						id="product_weight"
+						step="0.01"
+						required />
+				</div>
+				<div class="mb-3">
+					<label for="product_quantity" class="form-label"
+						>Product Quantity</label
+					>
+					<input
+						type="number"
+						class="form-control"
+						id="product_quantity"
+						required />
+				</div>
+				<div class="mb-3">
+					<label for="product_category" class="form-label"
+						>Product Category</label
+					>
+					<select class="form-control" id="product_category" required></select>
+				</div>
+				<div class="mb-3">
+					<label for="product_imagepath" class="form-label"
+						>Product Image</label
+					>
+					<input
+						type="file"
+						class="form-control"
+						id="product_imagepath"
+						required />
+				</div>
+				<button type="submit" class="btn btn-primary">Add Product</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script src="../frontend/js/new_product.js"></script>

@@ -3,7 +3,7 @@ $(document).ready(function () {
 
 	function fetchCategories() {
 		$.ajax({
-			url: 'http://localhost/webprojekt/WebProjektGymnius/backend/public/api/categories.php',
+			url: '../backend/public/api/categories.php',
 			type: 'GET',
 			dataType: 'json',
 			success: function (categories) {

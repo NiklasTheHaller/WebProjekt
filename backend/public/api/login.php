@@ -1,6 +1,9 @@
 <?php
-session_start(); // Start the session at the beginning
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
+require_once '../../session_helper.php';
 require_once '../../logic/datahandler.php';
 
 header('Content-Type: application/json');
@@ -9,51 +12,64 @@ $email_or_username = $password = "";
 $email_or_username_err = $password_err = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get JSON input
     $data = json_decode(file_get_contents('php://input'), true);
     $email_or_username = trim($data["email_or_username"]);
     $password = trim($data["password"]);
     $remember_me = isset($data["remember_me"]) ? $data["remember_me"] : false;
 
-    // Validate email or username
+    // Log input data for debugging
+    error_log("Input email_or_username: " . $email_or_username);
+    error_log("Input password: " . $password);
+
     if (empty($email_or_username)) {
         $email_or_username_err = "Please enter your email or username.";
     }
 
-    // Validate password
     if (empty($password)) {
         $password_err = "Please enter your password.";
     }
 
-    // Check input errors before validating the user
     if (empty($email_or_username_err) && empty($password_err)) {
         $dataHandler = new DataHandler();
 
-        // Try to get the user by email
         $user = $dataHandler->getUserByEmail($email_or_username);
 
-        // If not found by email, try by username
         if (!$user) {
             $user = $dataHandler->getUserByUsername($email_or_username);
         }
 
-        // Validate user
+        // Log user data for debugging
+        error_log("User data: " . print_r($user, true));
+
         if ($user && password_verify($password, $user->password)) {
-            // Set session
             $_SESSION["user_id"] = $user->id;
 
-            if ($remember_me) {
-                // Set a cookie for 30 days
-                setcookie("user_id", $user->id, time() + (86400 * 30), "/"); // 86400 = 1 day
+            if ($dataHandler->isAdmin($user->id)) {
+                $_SESSION["is_admin"] = true;
+                $_SESSION["admin_role"] = $dataHandler->getAdminRole($user->id);
+            } else {
+                $_SESSION["is_admin"] = false;
+                $_SESSION["admin_role"] = null;
             }
 
-            echo json_encode(['status' => 'success', 'user_id' => $user->id, 'message' => 'Login successful']);
+            if ($remember_me) {
+                setcookie("user_id", $user->id, time() + (86400 * 30), "/");
+                setcookie("is_admin", $_SESSION["is_admin"], time() + (86400 * 30), "/");
+                setcookie("admin_role", $_SESSION["admin_role"], time() + (86400 * 30), "/");
+            }
+
+            echo json_encode([
+                'status' => 'success',
+                'user_id' => $user->id,
+                'is_admin' => $_SESSION["is_admin"],
+                'admin_role' => $_SESSION["admin_role"],
+                'message' => 'Login successful'
+            ]);
         } else {
             http_response_code(401);
             echo json_encode(['error' => 'Invalid email/username or password']);
         }
     } else {
-        // Return validation errors
         echo json_encode([
             'email_or_username_err' => $email_or_username_err,
             'password_err' => $password_err

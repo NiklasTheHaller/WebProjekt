@@ -4,25 +4,30 @@
 
 header('Content-Type: application/json');
 
-$uri = trim($_SERVER['REQUEST_URI'], '/');
+$uri = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 $uriSegments = explode('/', $uri);
 
-// Find the position of 'api' in the URI, then get the segment immediately after it
+// Ensure the 'api' segment exists in the URI
 $apiPosition = array_search('api', $uriSegments);
+if ($apiPosition === false) {
+    http_response_code(404);
+    echo json_encode(['error' => 'API segment not found']);
+    exit;
+}
+
+// Get the resource segment immediately after 'api'
 $resource = $uriSegments[$apiPosition + 1] ?? null;
 
-switch ($resource) {
-    case 'users':
-        require __DIR__ . '/../api/users.php';
-        break;
-    case 'products':
-        require __DIR__ . '/../api/products.php';
-        break;
-    case 'orders':
-        require __DIR__ . '/../api/orders.php';
-        break;
-    default:
-        http_response_code(404);
-        echo json_encode(['error' => 'Resource not found']);
-        break;
+// Define the valid resources and their corresponding files
+$validResources = [
+    'users' => '/../api/users.php',
+    'products' => '/../api/products.php',
+    'orders' => '/../api/orders.php',
+];
+
+if (isset($validResources[$resource])) {
+    require __DIR__ . $validResources[$resource];
+} else {
+    http_response_code(404);
+    echo json_encode(['error' => 'Resource not found']);
 }

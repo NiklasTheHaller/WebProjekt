@@ -17,7 +17,8 @@ $(document).ready(function () {
 						row.append($('<td>').text(order.order_id));
 						row.append($('<td>').text(order.order_date));
 						row.append($('<td>').text(order.order_status));
-						row.append($('<td>').text(order.total_price));
+						row.append($('<td>').text('€' + order.total_price)); // Display total item price
+						row.append($('<td>').text('€' + order.shipping_cost)); // Display shipping cost
 						var detailsButton = $('<button>')
 							.addClass('btn btn-primary')
 							.text('Details')
@@ -51,14 +52,7 @@ $(document).ready(function () {
 		event.preventDefault(); // Prevent the default anchor behavior
 		$('#main-content').load('sites/' + pageName + '.html', function () {
 			if (orderId) {
-				window.history.pushState(
-					{ orderId: orderId },
-					'',
-					'?page=' + pageName + '&order_id=' + orderId
-				);
-				fetchOrderDetails(orderId); // Use the global function
-			} else {
-				window.history.pushState({}, '', '?page=' + pageName);
+				window.history.pushState({}, '', '?order_id=' + orderId);
 			}
 		});
 	}

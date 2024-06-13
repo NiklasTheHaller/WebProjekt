@@ -111,6 +111,23 @@ class DataHandler
         return $stmt->execute([$id]);
     }
 
+    public function isAdmin($userId)
+    {
+        $sql = "SELECT COUNT(*) FROM admin WHERE fk_userid = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function getAdminRole($userId)
+    {
+        $sql = "SELECT role FROM admin WHERE fk_userid = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetchColumn();
+    }
+
+
     // CRUD Operations for Product
     public function createProduct($product)
     {
@@ -119,6 +136,14 @@ class DataHandler
         return $stmt->execute([
             $product->product_name, $product->product_description, $product->product_price, $product->product_weight, $product->product_quantity, $product->product_category, $product->product_imagepath
         ]);
+    }
+
+    public function getAllProducts()
+    {
+        $sql = "SELECT * FROM product";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function getProductById($product_id)
@@ -193,6 +218,35 @@ class DataHandler
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$order_id]);
         return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public function updateInvoiceNumber($order_id, $invoice_number)
+    {
+        $sql = "UPDATE orders SET invoice_number = ? WHERE order_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([$invoice_number, $order_id]);
+    }
+
+    public function getOrderItemsWithProductName($order_id)
+    {
+        $sql = "
+            SELECT 
+                order_items.*, 
+                product.product_name 
+            FROM 
+                order_items 
+            JOIN 
+                product ON order_items.fk_product_id = product.product_id 
+            WHERE 
+                order_items.fk_order_id = ?
+        ";
+        $stmt = $this->conn->prepare($sql);
+        if ($stmt->execute([$order_id])) {
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } else {
+            error_log("Failed to execute query for order items with order ID: $order_id");
+            return false;
+        }
     }
 
     // categories

@@ -1,6 +1,7 @@
 <?php
 
 require_once '../../logic/datahandler.php';
+require_once '../../session_helper.php';
 
 header('Content-Type: application/json');
 
