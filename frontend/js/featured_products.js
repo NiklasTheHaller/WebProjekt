@@ -4,7 +4,7 @@ $(document).ready(function () {
 	// Map each product ID to a fetch operation returning a promise
 	const fetchPromises = productIds.map((productId) => {
 		return $.ajax({
-			url: 'http://localhost/webprojekt/WebProjektGymnius/backend/public/api/products.php',
+			url: '../backend/public/api/products.php',
 			type: 'GET',
 			data: { product_id: productId },
 			dataType: 'json',

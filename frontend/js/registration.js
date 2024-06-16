@@ -32,6 +32,7 @@ $(document).ready(function () {
 				username: $('#username').val(),
 				password: $('#password').val(),
 				confirm_password: $('#confirm-password').val(),
+				payment_method: $('#payment_method').val(),
 			};
 
 			$.ajax({

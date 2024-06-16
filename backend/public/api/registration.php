@@ -1,11 +1,12 @@
 <?php
 
 require_once '../../logic/datahandler.php';
+require_once '../../session_helper.php';
 
 header('Content-Type: application/json');
 
-$title = $firstname = $lastname = $address = $zipcode = $city = $email = $username = $password = $confirm_password = "";
-$title_err = $firstname_err = $lastname_err = $address_err = $zipcode_err = $city_err = $email_err = $username_err = $password_err = $confirm_password_err = "";
+$title = $firstname = $lastname = $address = $zipcode = $city = $email = $username = $password = $confirm_password = $payment_method = "";
+$title_err = $firstname_err = $lastname_err = $address_err = $zipcode_err = $city_err = $email_err = $username_err = $password_err = $confirm_password_err = $payment_method_err = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get JSON input
@@ -20,6 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($data["username"]);
     $password = trim($data["password"]);
     $confirm_password = trim($data["confirm_password"]);
+    $payment_method = trim($data["payment_method"]);
 
     // Validate title
     if (empty($title)) {
@@ -91,11 +93,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $confirm_password_err = "Password did not match.";
     }
 
+    // Validate payment method
+    $valid_payment_methods = ["credit_card", "debit_card", "paypal"];
+    if (empty($payment_method) || !in_array($payment_method, $valid_payment_methods)) {
+        $payment_method_err = "Please select a valid payment method.";
+    }
+
     // Check input errors before inserting in database
     if (
         empty($title_err) && empty($firstname_err) && empty($lastname_err) &&
         empty($address_err) && empty($zipcode_err) && empty($city_err) &&
-        empty($email_err) && empty($username_err) && empty($password_err) && empty($confirm_password_err)
+        empty($email_err) && empty($username_err) && empty($password_err) &&
+        empty($confirm_password_err) && empty($payment_method_err)
     ) {
 
         $hashed_password = password_hash($password, PASSWORD_DEFAULT); // Create a hashed password
@@ -111,6 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user->username = $username;
         $user->password = $hashed_password;
         $user->status = 'active';  // Default status
+        $user->payment_method = $payment_method; // Payment method
 
         if ($dataHandler->createUser($user)) {
             echo json_encode(['status' => 'success']);
@@ -130,7 +140,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'email_err' => $email_err,
             'username_err' => $username_err,
             'password_err' => $password_err,
-            'confirm_password_err' => $confirm_password_err
+            'confirm_password_err' => $confirm_password_err,
+            'payment_method_err' => $payment_method_err
         ]);
     }
 } else {
