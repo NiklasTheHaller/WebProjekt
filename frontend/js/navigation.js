@@ -90,7 +90,6 @@ $(document).ready(function () {
 	});
 
 	// admin button
-
 	$('#admin-nav').click(function (event) {
 		handleNavigationClick(event, 'admin');
 	});
@@ -118,6 +117,8 @@ $(document).ready(function () {
 			getCookie('is_admin') === 'true'
 		) {
 			$('#admin-dropdown').show();
+		} else {
+			$('#admin-dropdown').hide();
 		}
 	}
 
@@ -138,19 +139,32 @@ $(document).ready(function () {
 
 	// Function to sign out user
 	function signOutUser() {
-		sessionStorage.removeItem('userLoggedIn');
-		sessionStorage.removeItem('is_admin');
-		document.cookie = 'user_id=; Max-Age=-99999999; path=/'; // Delete the cookie
-		document.cookie = 'is_admin=; Max-Age=-99999999; path=/'; // Delete the cookie
-		document.cookie = 'admin_role=; Max-Age=-99999999; path=/'; // Delete the cookie
+		$.ajax({
+			url: '../backend/public/api/logout.php',
+			type: 'POST',
+			success: function (response) {
+				if (response.status === 'success') {
+					sessionStorage.removeItem('userLoggedIn');
+					sessionStorage.removeItem('is_admin');
+					document.cookie = 'user_id=; Max-Age=-99999999; path=/'; // Delete the cookie
+					document.cookie = 'is_admin=; Max-Age=-99999999; path=/'; // Delete the cookie
+					document.cookie = 'admin_role=; Max-Age=-99999999; path=/'; // Delete the cookie
 
-		// Update the UI to show login and sign-up buttons
-		$('#auth-buttons').show();
-		$('#user-dropdown').hide();
-		$('#admin-dropdown').hide();
+					// Update the UI to show login and sign-up buttons
+					$('#auth-buttons').show();
+					$('#user-dropdown').hide();
+					$('#admin-dropdown').hide();
 
-		// Optionally, you can navigate to the homepage or login page
-		handleNavigationClick(new Event('click'), 'homepage');
+					// Optionally, you can navigate to the homepage or login page
+					handleNavigationClick(new Event('click'), 'homepage');
+				} else {
+					console.error('Error signing out:', response.error);
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error('Error signing out:', error);
+			},
+		});
 	}
 
 	// Function to get cookie by name
