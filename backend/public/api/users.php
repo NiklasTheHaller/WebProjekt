@@ -9,98 +9,65 @@ header('Content-Type: application/json'); // sets content type to json
 
 switch ($method) {
     case 'GET':
-        handleGetRequest($dataHandler);
-        break;
-    case 'POST':
-        handlePostRequest($dataHandler);
-        break;
-    case 'PUT':
-        handlePutRequest($dataHandler);
-        break;
-    case 'DELETE':
-        handleDeleteRequest($dataHandler);
-        break;
-    default:
-        http_response_code(405);
-        echo json_encode(['error' => 'Method Not Allowed']);
-        break;
-}
-
-function handleGetRequest($dataHandler)
-{
-    $id = $_GET['id'] ?? null;
-    if ($id) {
-        $user = $dataHandler->getUserById($id);
-        if ($user) {
+        // Get a user by ID or get all users
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            $user = $dataHandler->getUserById($id);
             echo json_encode($user);
         } else {
-            http_response_code(404);
-            echo json_encode(['error' => 'User not found']);
+            $users = $dataHandler->getAllUsers();
+            echo json_encode($users);
         }
-    } else {
-        http_response_code(400);
-        echo json_encode(['error' => 'User ID is required for GET request']);
-    }
-}
+        break;
 
-function handlePostRequest($dataHandler)
-{
-    $data = json_decode(file_get_contents('php://input'), true);
-    if (validateUserData($data)) {
-        $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT); // Hash the password
+    case 'POST':
+        // Create a new user
+        $data = json_decode(file_get_contents('php://input'), true);
         $result = $dataHandler->createUser((object)$data);
         echo json_encode(['result' => $result]);
-    } else {
-        http_response_code(400);
-        echo json_encode(['error' => 'Invalid user data']);
-    }
-}
+        break;
 
-function handlePutRequest($dataHandler)
-{
-    $id = $_GET['id'] ?? null;
-    if ($id) {
-        $data = json_decode(file_get_contents('php://input'), true);
-        $data['id'] = $id;
-        if (validateUserData($data, false)) { // false indicates it's an update
+    case 'PUT':
+        // Update an existing user
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $data['id'] = $id;
             $result = $dataHandler->updateUser((object)$data);
             echo json_encode(['result' => $result]);
         } else {
             http_response_code(400);
-            echo json_encode(['error' => 'Invalid user data']);
+            echo json_encode(['error' => 'User ID is required for PUT request']);
         }
-    } else {
-        http_response_code(400);
-        echo json_encode(['error' => 'User ID is required for PUT request']);
-    }
-}
+        break;
 
-function handleDeleteRequest($dataHandler)
-{
-    $id = $_GET['id'] ?? null;
-    if ($id) {
-        $result = $dataHandler->deleteUser($id);
-        echo json_encode(['result' => $result]);
-    } else {
-        http_response_code(400);
-        echo json_encode(['error' => 'User ID is required for DELETE request']);
-    }
-}
-
-function validateUserData($data, $isNewUser = true)
-{
-    $requiredFields = ['salutation', 'firstname', 'lastname', 'address', 'zipcode', 'city', 'email', 'username', 'payment_method'];
-    if ($isNewUser) {
-        $requiredFields[] = 'password';
-    }
-
-    foreach ($requiredFields as $field) {
-        if (empty($data[$field])) {
-            return false;
+    case 'PATCH':
+        // Change user password
+        $data = json_decode(file_get_contents('php://input'), true);
+        $id = $data['id'] ?? null;
+        if ($id && isset($data['new_password'])) {
+            $result = $dataHandler->changeUserPassword($id, $data['new_password']);
+            echo json_encode(['result' => $result]);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'User ID and new password are required for PATCH request']);
         }
-    }
+        break;
 
-    // Additional validation can be added here, e.g., email format, password strength, etc.
+    case 'DELETE':
+        // Delete a user
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            $result = $dataHandler->deleteUser($id);
+            echo json_encode(['result' => $result]);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'User ID is required for DELETE request']);
+        }
+        break;
 
-    return true;
+    default:
+        http_response_code(405);
+        echo json_encode(['error' => 'Method Not Allowed']);
+        break;
 }
