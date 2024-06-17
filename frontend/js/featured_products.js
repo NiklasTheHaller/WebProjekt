@@ -19,7 +19,7 @@ $(document).ready(function () {
 				var html = `
                 <div class="col-md-4 mb-4">
                     <div class="card">
-                        <img src="http://localhost/webprojekt/WebProjektGymnius/${data.product_imagepath}" class="card-img-top" alt="${data.product_name}" />
+                        <img src="../${data.product_imagepath}" class="card-img-top" alt="${data.product_name}" />
                         <div class="card-body">
                             <h5 class="card-title">${data.product_name}</h5>
                             <p class="card-text">${data.product_description}</p>

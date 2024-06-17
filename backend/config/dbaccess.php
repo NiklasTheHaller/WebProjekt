@@ -4,8 +4,8 @@ class DatabaseAccess
 {
     private $host = 'localhost'; // Database host
     private $db_name = 'gymnius_db'; // Database name
-    private $username = 'admin'; // Database username
-    private $password = 'password'; // Database password
+    private $username = 'root'; // Database username
+    private $password = ''; // Database password
     private $conn;
 
     public function getConnection()
