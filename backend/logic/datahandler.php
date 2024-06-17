@@ -21,12 +21,13 @@ class DataHandler
         ]);
     }
 
-    public function getUserById($id)
+    public function getUserById($userId)
     {
-        $sql = "SELECT * FROM user WHERE id = ?";
+        $sql = "SELECT * FROM user WHERE id = :userId";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_OBJ);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getUserByEmail($email)
@@ -44,14 +45,48 @@ class DataHandler
         $stmt->execute([$username]);
         return $stmt->fetch(PDO::FETCH_OBJ);
     }
-
-    public function updateUser($user)
+    public function getAllUsers()
     {
-        $sql = "UPDATE user SET salutation = ?, firstname = ?, lastname = ?, address = ?, zipcode = ?, city = ?, email = ?, username = ?, password = ?, payment_method = ?, status = ? WHERE id = ?";
+        $sql = "SELECT id, salutation, firstname, lastname, address, zipcode, city, email, username, payment_method, status FROM user LIMIT 25";
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            $user->salutation, $user->firstname, $user->lastname, $user->address, $user->zipcode, $user->city, $user->email, $user->username, $user->password, $user->payment_method, $user->status, $user->id
-        ]);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateUser($data)
+    {
+        $sql = "UPDATE user SET salutation = :salutation, firstname = :firstname, lastname = :lastname, address = :address, zipcode = :zipcode, city = :city, email = :email, username = :username, payment_method = :payment_method, status = :status WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $data->id, PDO::PARAM_INT);
+        $stmt->bindParam(':salutation', $data->salutation, PDO::PARAM_STR);
+        $stmt->bindParam(':firstname', $data->firstname, PDO::PARAM_STR);
+        $stmt->bindParam(':lastname', $data->lastname, PDO::PARAM_STR);
+        $stmt->bindParam(':address', $data->address, PDO::PARAM_STR);
+        $stmt->bindParam(':zipcode', $data->zipcode, PDO::PARAM_STR);
+        $stmt->bindParam(':city', $data->city, PDO::PARAM_STR);
+        $stmt->bindParam(':email', $data->email, PDO::PARAM_STR);
+        $stmt->bindParam(':username', $data->username, PDO::PARAM_STR);
+        $stmt->bindParam(':payment_method', $data->payment_method, PDO::PARAM_STR);
+        $stmt->bindParam(':status', $data->status, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
+    public function changeUserPassword($id, $new_password)
+    {
+        $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+        $sql = "UPDATE user SET password = :password WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':password', $hashed_password, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+    public function setUserStatus($userId, $status)
+    {
+        $sql = "UPDATE user SET status = :status WHERE id = :userId";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':status', $status, PDO::PARAM_BOOL);
+        return $stmt->execute();
     }
 
     public function updateUserProfile($user)
