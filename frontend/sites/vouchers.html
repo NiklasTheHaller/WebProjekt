@@ -1,0 +1,40 @@
+<div class="container">
+	<h3 class="my-5">Generate Voucher</h3>
+	<form id="voucher-form">
+		<div class="mb-3">
+			<label for="voucher_code" class="form-label">Voucher Code</label>
+			<input type="text" class="form-control" id="voucher_code" required />
+		</div>
+		<div class="mb-3">
+			<label for="expiration_date" class="form-label">Expiration Date</label>
+			<input type="date" class="form-control" id="expiration_date" required />
+		</div>
+		<div class="mb-3">
+			<label for="discount_type" class="form-label">Discount Type</label>
+			<select class="form-select" id="discount_type" required>
+				<option value="percentage">Percentage</option>
+				<option value="fixed">Fixed Amount</option>
+			</select>
+		</div>
+		<div class="mb-3">
+			<label for="discount_amount" class="form-label">Discount Amount</label>
+			<input type="number" class="form-control" id="discount_amount" required />
+		</div>
+		<button type="submit" class="btn btn-primary">Generate Voucher</button>
+	</form>
+	<h3 class="my-5">Existing Vouchers</h3>
+	<table class="table">
+		<thead>
+			<tr class="text-center">
+				<th>Voucher ID</th>
+				<th>Voucher Code</th>
+				<th>Expiration Date</th>
+				<th>Discount Type</th>
+				<th>Discount Amount</th>
+			</tr>
+		</thead>
+		<tbody id="voucher-list"></tbody>
+	</table>
+</div>
+
+<script src="../frontend/js/vouchers.js"></script>

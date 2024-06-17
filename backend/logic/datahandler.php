@@ -265,4 +265,23 @@ class DataHandler
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
+
+    // CRUD Operations for Vouchers
+
+    public function createVoucher($voucher)
+    {
+        $sql = "INSERT INTO vouchers (voucher_code, expiration_date, discount_type, discount_amount) VALUES (?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            $voucher->voucher_code, $voucher->expiration_date, $voucher->discount_type, $voucher->discount_amount
+        ]);
+    }
+
+    public function getAllVouchers()
+    {
+        $sql = "SELECT * FROM vouchers";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
 }
