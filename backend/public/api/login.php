@@ -17,10 +17,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = trim($data["password"]);
     $remember_me = isset($data["remember_me"]) ? $data["remember_me"] : false;
 
-    // Log input data for debugging
-    error_log("Input email_or_username: " . $email_or_username);
-    error_log("Input password: " . $password);
-
     if (empty($email_or_username)) {
         $email_or_username_err = "Please enter your email or username.";
     }
@@ -38,33 +34,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $user = $dataHandler->getUserByUsername($email_or_username);
         }
 
-        // Log user data for debugging
-        error_log("User data: " . print_r($user, true));
+        if ($user) {
+            if ($user->status === 'inactive') {
+                http_response_code(403);
+                echo json_encode(['error' => 'Your account is inactive! Please contact the Administrator for help.']);
+                exit;
+            }
 
-        if ($user && password_verify($password, $user->password)) {
-            $_SESSION["user_id"] = $user->id;
+            if (password_verify($password, $user->password)) {
+                $_SESSION["user_id"] = $user->id;
 
-            if ($dataHandler->isAdmin($user->id)) {
-                $_SESSION["is_admin"] = true;
-                $_SESSION["admin_role"] = $dataHandler->getAdminRole($user->id);
+                $is_admin = $dataHandler->isAdmin($user->id);
+                $_SESSION["is_admin"] = $is_admin;
+                $_SESSION["admin_role"] = $is_admin ? $dataHandler->getAdminRole($user->id) : null;
+
+                if ($remember_me) {
+                    setcookie("user_id", $user->id, time() + (86400 * 30), "/");
+                    setcookie("is_admin", $is_admin, time() + (86400 * 30), "/");
+                    setcookie("admin_role", $_SESSION["admin_role"], time() + (86400 * 30), "/");
+                }
+
+                echo json_encode([
+                    'status' => 'success',
+                    'user_id' => $user->id,
+                    'is_admin' => $is_admin,
+                    'admin_role' => $_SESSION["admin_role"],
+                    'message' => 'Login successful'
+                ]);
             } else {
-                $_SESSION["is_admin"] = false;
-                $_SESSION["admin_role"] = null;
+                http_response_code(401);
+                echo json_encode(['error' => 'Invalid email/username or password']);
             }
-
-            if ($remember_me) {
-                setcookie("user_id", $user->id, time() + (86400 * 30), "/");
-                setcookie("is_admin", $_SESSION["is_admin"], time() + (86400 * 30), "/");
-                setcookie("admin_role", $_SESSION["admin_role"], time() + (86400 * 30), "/");
-            }
-
-            echo json_encode([
-                'status' => 'success',
-                'user_id' => $user->id,
-                'is_admin' => $_SESSION["is_admin"],
-                'admin_role' => $_SESSION["admin_role"],
-                'message' => 'Login successful'
-            ]);
         } else {
             http_response_code(401);
             echo json_encode(['error' => 'Invalid email/username or password']);

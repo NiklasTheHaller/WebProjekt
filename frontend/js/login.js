@@ -21,6 +21,8 @@ $(document).ready(function () {
 				if (response.status === 'success') {
 					// Set session or cookie based on response
 					sessionStorage.setItem('userLoggedIn', true);
+					sessionStorage.setItem('is_admin', response.is_admin); // Store admin status
+
 					if (formData.remember_me) {
 						document.cookie =
 							'user_id=' +
@@ -28,7 +30,14 @@ $(document).ready(function () {
 							'; max-age=' +
 							30 * 24 * 60 * 60 +
 							'; path=/'; // 30 days
+						document.cookie =
+							'is_admin=' +
+							response.is_admin +
+							'; max-age=' +
+							30 * 24 * 60 * 60 +
+							'; path=/'; // Store admin status in cookie
 					}
+
 					updateUIForLoggedInUser();
 					console.log('Navigating to homepage');
 					handleNavigationClick(new Event('click'), 'homepage');
@@ -39,7 +48,13 @@ $(document).ready(function () {
 			},
 			error: function (xhr, status, error) {
 				console.log('Error: ', xhr.responseText);
-				showErrorAlert('Username/Email does not match the password');
+				if (xhr.status === 403) {
+					showErrorAlert(
+						'Your account is inactive! Please contact the Administrator for help.'
+					);
+				} else {
+					showErrorAlert('Invalid email/username or password');
+				}
 			},
 		});
 	});
@@ -60,5 +75,24 @@ $(document).ready(function () {
 	function updateUIForLoggedInUser() {
 		$('#auth-buttons').hide();
 		$('#user-dropdown').show();
+
+		if (
+			sessionStorage.getItem('is_admin') === 'true' ||
+			getCookie('is_admin') === 'true'
+		) {
+			$('#admin-dropdown').show();
+		}
+	}
+
+	// Function to get cookie by name
+	function getCookie(name) {
+		let cookieArr = document.cookie.split(';');
+		for (let i = 0; i < cookieArr.length; i++) {
+			let cookiePair = cookieArr[i].split('=');
+			if (name == cookiePair[0].trim()) {
+				return decodeURIComponent(cookiePair[1]);
+			}
+		}
+		return null;
 	}
 });
