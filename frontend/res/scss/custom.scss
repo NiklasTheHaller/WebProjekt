@@ -1,0 +1,61 @@
+// Custom.scss
+
+// frontend/res/scss/custom.scs
+// Option A: Include all of Bootstrap
+
+// Include any default variable overrides here (though functions won't be available)
+
+$primary: #163f66;
+$secondary: #fc385b;
+$light: #dadcd2;
+$dark: #13161a;
+
+$success: #03a159;
+$danger: #f20a01;
+$warning: #e3c904;
+$info: #d45f07;
+
+@import '../bootstrap_files/node_modules/bootstrap/scss/bootstrap';
+
+// Then add additional custom code here
+
+.custom-box {
+	background-color: #f8f9fa; /* Light background color */
+	border: 1px solid #ced4da; /* Gray border */
+	border-radius: 10px; /* Rounded edges */
+	padding: 20px;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Box shadow */
+}
+
+.logo {
+	object-fit: contain;
+}
+
+#navbar-search::placeholder {
+	/* Chrome, Firefox, Opera, Safari 10.1+ */
+	color: white;
+	opacity: 1; /* Firefox */
+}
+
+#navbar-search:-ms-input-placeholder {
+	/* Internet Explorer 10-11 */
+	color: white;
+}
+
+#navbar-search::-ms-input-placeholder {
+	/* Microsoft Edge */
+	color: white;
+}
+
+.category-card {
+	width: 100%;
+	height: 250px; /* Adjust the height as needed */
+	overflow: hidden;
+	position: relative;
+}
+
+.category-card .category-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover; /* Ensures the image covers the entire area without distortion */
+}
