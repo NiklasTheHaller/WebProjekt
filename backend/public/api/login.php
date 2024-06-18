@@ -62,10 +62,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'message' => 'Login successful'
                 ]);
             } else {
+                error_log("Password verification failed for user: " . $user->id);
                 http_response_code(401);
                 echo json_encode(['error' => 'Invalid email/username or password']);
             }
         } else {
+            error_log("User not found with email/username: " . $email_or_username);
             http_response_code(401);
             echo json_encode(['error' => 'Invalid email/username or password']);
         }

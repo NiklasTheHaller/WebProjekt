@@ -37,20 +37,26 @@ $(document).ready(function () {
                     `;
 					orderInfoTableBody.append(orderInfo);
 
+					// Handle discount logic
 					var discount = order.discount ? parseFloat(order.discount) : 0;
-					var totalAmount =
-						parseFloat(order.total_price) +
-						parseFloat(order.shipping_cost) -
-						discount;
+					var discountAmount = 0;
+
+					if (order.discount_type === 'percentage') {
+						discountAmount = parseFloat(order.total_price) * discount;
+					} else if (order.discount_type === 'fixed') {
+						discountAmount = discount;
+					}
+
+					var totalAmount = parseFloat(order.total_price) - discountAmount;
 
 					var financialInfo = `
-                        <tr><td>Total Item Price</td><td>€${
-													order.total_price
-												}</td></tr>
+                        <tr><td>Total Item Price</td><td>€${(
+													order.total_price - 2.99
+												).toFixed(2)}</td></tr>
                         <tr><td>Shipping Cost</td><td>€${
 													order.shipping_cost
 												}</td></tr>
-                        <tr><td>Discount</td><td>€${discount}</td></tr>
+                        <tr><td>Discount</td><td>€${discountAmount}</td></tr>
                         <tr><td><strong>Total Amount</strong></td><td><strong>€${totalAmount.toFixed(
 													2
 												)}</strong></td></tr>
@@ -73,7 +79,7 @@ $(document).ready(function () {
 						.addClass('btn btn-secondary mt-3')
 						.text('Print Invoice')
 						.click(function () {
-							openInvoiceWindow(order, orderItems);
+							openInvoiceWindow(order, orderItems, discountAmount);
 						});
 					$('#order-details-container').append(printInvoiceButton);
 				} else {
@@ -87,13 +93,9 @@ $(document).ready(function () {
 		});
 	}
 
-	function openInvoiceWindow(order, orderItems) {
+	function openInvoiceWindow(order, orderItems, discountAmount) {
 		var newWindow = window.open('', '_blank');
-		var discount = order.discount ? parseFloat(order.discount) : 0;
-		var totalAmount =
-			parseFloat(order.total_price) +
-			parseFloat(order.shipping_cost) -
-			discount;
+		var totalAmount = parseFloat(order.total_price) - discountAmount;
 		var invoiceHtml = `
             <html>
             <head>
@@ -135,9 +137,11 @@ $(document).ready(function () {
 													.join('')}
                     </tbody>
                 </table>
-                <p>Total Item Price: €${order.total_price}</p>
+                <p>Total Item Price: €${(order.total_price - 2.99).toFixed(
+									2
+								)}</p>
                 <p>Shipping Cost: €${order.shipping_cost}</p>
-                <p>Discount: €${discount}</p>
+                <p>Discount: €${discountAmount}</p>
                 <p><strong>Total Amount: €${totalAmount.toFixed(2)}</strong></p>
                 <button onclick="window.print()">Print</button>
             </body>

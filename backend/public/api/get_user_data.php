@@ -25,15 +25,15 @@ if ($user) {
     echo json_encode([
         'status' => 'success',
         'user' => [
-            'title' => $user->salutation,
-            'firstname' => $user->firstname,
-            'lastname' => $user->lastname,
-            'email' => $mask ? maskEmail($user->email) : $user->email,
-            'username' => $user->username,
-            'address' => $mask ? maskAddress($user->address) : $user->address,
-            'zipcode' => $user->zipcode,
-            'city' => $user->city,
-            'payment_method' => $user->payment_method,
+            'title' => $user['salutation'],
+            'firstname' => $user['firstname'],
+            'lastname' => $user['lastname'],
+            'email' => $mask ? maskEmail($user['email']) : $user['email'],
+            'username' => $user['username'],
+            'address' => $mask ? maskAddress($user['address']) : $user['address'],
+            'zipcode' => $user['zipcode'],
+            'city' => $user['city'],
+            'payment_method' => $user['payment_method'],
             'role' => $role ? $role : 'Customer'
         ]
     ]);
