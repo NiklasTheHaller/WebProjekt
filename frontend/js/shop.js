@@ -1,29 +1,76 @@
 $(document).ready(function () {
+	let shoppingCart = {}; // Initialize shopping cart
+
 	displayProducts();
+
 	$('#available-products').on('click', 'button', handleAddButtonClick);
 	$('#shoppingcart').on('click', 'a', handleRemoveClick);
-});
 
-let shoppingCart = {};
+	$('#search-button').click(function () {
+		const query = $('#product-search').val();
+		searchProducts(query);
+	});
 
-function displayProducts() {
-	$.ajax({
-		type: 'GET',
-		url: 'products.json',
-		cache: false,
-		dataType: 'json',
-		success: function (data) {
-			let listing = '';
-			$.each(data, function (index, product) {
-				listing += `
+	$('#product-search').keypress(function (e) {
+		if (e.which === 13) {
+			// Enter key press
+			const query = $(this).val();
+			searchProducts(query);
+		}
+	});
+
+	function displayProducts() {
+		$.ajax({
+			type: 'GET',
+			url: '../backend/public/api/products.php',
+			cache: false,
+			dataType: 'json',
+			success: function (data) {
+				renderProductList(data);
+			},
+			error: function () {
+				$('#available-products').append(
+					'<p style="color: red;">Failed to get data</p>'
+				);
+			},
+		});
+	}
+
+	function searchProducts(query) {
+		$.ajax({
+			type: 'GET',
+			url: '../backend/public/api/products.php',
+			cache: false,
+			dataType: 'json',
+			success: function (data) {
+				const filteredData = data.filter((product) =>
+					product.product_name.toLowerCase().includes(query.toLowerCase())
+				);
+				renderProductList(filteredData);
+			},
+			error: function () {
+				$('#available-products').append(
+					'<p style="color: red;">Failed to get data</p>'
+				);
+			},
+		});
+	}
+
+	function renderProductList(data) {
+		let listing = '';
+		data.forEach((product) => {
+			let imageUrl = `../${product.product_imagepath}`;
+			listing += `
                 <li class="custom-border border-1 list-group-item py-2 px-2 mt-2">
-                    <p><b>${product.name}, €${product.price}</b></p>
+                    <p><b>${product.product_name}, €${
+				product.product_price
+			}</b></p>
                     <div class="row">
                         <div class="col-md-6">
-                            <p>${product.short_description}</p>
+                            <p>${product.product_description}</p>
                         </div>
                         <div class="col-md-4">
-                            <img src="${product.image_url}" class="img-fluid">
+                            <img src="${imageUrl}" class="img-fluid">
                         </div>
                         <div class="col-md-2">
                             <button data-product='${JSON.stringify(
@@ -32,55 +79,49 @@ function displayProducts() {
                         </div>
                     </div>
                 </li>
-                `;
-			});
-			$('#available-products').append(listing);
-		},
-		error: function () {
-			$('#available-products').append(
-				'<p style="color: red;">failed to get data</p>'
-			);
-		},
-	});
-}
-
-function updateCartDisplay() {
-	let display = '';
-	let total = 0;
-	for (let key in shoppingCart) {
-		let item = shoppingCart[key];
-		total += item.qty * item.price;
-		display += `<li>${item.qty}x ${item.name}, €${
-			item.price
-		} <a href="#" data-id="${key}">${
-			item.qty > 1 ? 'decrease' : 'remove'
-		}</a></li>`;
+            `;
+		});
+		$('#available-products').html(listing);
 	}
-	$('#shoppingcart').html(display || '<p>(no products selected)</p>');
-	$('#total').text(`Sum: €${total.toPrecision(2)}`); // should limit to two decimal points
-}
 
-function handleAddButtonClick(event) {
-	let product = $(event.target).data('product');
-	if (shoppingCart[product.name]) {
-		shoppingCart[product.name].qty++;
-	} else {
-		shoppingCart[product.name] = {
-			qty: 1,
-			name: product.name,
-			price: product.price,
-		};
+	function updateCartDisplay() {
+		let display = '';
+		let total = 0;
+		for (let key in shoppingCart) {
+			let item = shoppingCart[key];
+			total += item.qty * item.product_price;
+			display += `<li>${item.qty}x ${item.product_name}, €${
+				item.product_price
+			} <a href="#" data-id="${key}">${
+				item.qty > 1 ? 'decrease' : 'remove'
+			}</a></li>`;
+		}
+		$('#shoppingcart').html(display || '<p>(no products selected)</p>');
+		$('#total').text(`Sum: €${total.toFixed(2)}`);
 	}
-	updateCartDisplay();
-}
 
-function handleRemoveClick(event) {
-	event.preventDefault();
-	let productId = $(event.target).data('id');
-	if (shoppingCart[productId].qty > 1) {
-		shoppingCart[productId].qty--;
-	} else {
-		delete shoppingCart[productId];
+	function handleAddButtonClick(event) {
+		let product = $(event.target).data('product');
+		if (shoppingCart[product.product_name]) {
+			shoppingCart[product.product_name].qty++;
+		} else {
+			shoppingCart[product.product_name] = {
+				qty: 1,
+				product_name: product.product_name,
+				product_price: product.product_price,
+			};
+		}
+		updateCartDisplay();
 	}
-	updateCartDisplay();
-}
+
+	function handleRemoveClick(event) {
+		event.preventDefault();
+		let productId = $(event.target).data('id');
+		if (shoppingCart[productId].qty > 1) {
+			shoppingCart[productId].qty--;
+		} else {
+			delete shoppingCart[productId];
+		}
+		updateCartDisplay();
+	}
+});
