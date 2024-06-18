@@ -9,7 +9,7 @@ $(document).ready(function () {
     });
 
     $('#product-search').keypress(function (e) {
-        if (e.which === 13) { // Enter key pressed
+        if (e.which === 13) { // Enter key press
             const query = $(this).val();
             searchProducts(query);
         }
