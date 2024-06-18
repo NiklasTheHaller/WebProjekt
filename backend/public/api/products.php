@@ -2,11 +2,11 @@
 require_once '../../logic/datahandler.php';
 require_once '../../middleware.php';
 
-$dataHandler = new DataHandler();
-
 header('Content-Type: application/json');
 
 try {
+    $dataHandler = new DataHandler();
+
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         if (isset($_GET['product_id'])) {
             // Fetch a single product by ID
@@ -16,6 +16,15 @@ try {
             } else {
                 http_response_code(404);
                 echo json_encode(['error' => 'Product not found']);
+            }
+        } else if (isset($_GET['code'])) {
+            // Fetch voucher by code
+            $voucher = $dataHandler->getVoucherByCode($_GET['code']);
+            if ($voucher) {
+                echo json_encode([$voucher]);
+            } else {
+                http_response_code(404);
+                echo json_encode(['error' => 'Voucher not found']);
             }
         } else {
             // Fetch all products

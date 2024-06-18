@@ -71,15 +71,15 @@ class DataHandler
         return $stmt->execute();
     }
 
-    public function changeUserPassword($id, $new_password)
+    public function changeUserPassword($id, $hashed_password)
     {
-        $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
         $sql = "UPDATE user SET password = :password WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':password', $hashed_password, PDO::PARAM_STR);
         return $stmt->execute();
     }
+
     public function setUserStatus($userId, $status)
     {
         $sql = "UPDATE user SET status = :status WHERE id = :userId";
@@ -206,14 +206,33 @@ class DataHandler
     }
 
     // CRUD Operations for Orders and Order Items
+
+    public function getAllOrders()
+    {
+        $sql = "SELECT * FROM orders";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     public function createOrder($order)
     {
-        $sql = "INSERT INTO orders (fk_customer_id, total_price, order_status, order_date, shipping_address, billing_address, payment_method, shipping_cost, tracking_number, discount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO orders (fk_customer_id, total_price, order_status, order_date, shipping_address, billing_address, payment_method, shipping_cost, tracking_number, discount, invoice_number) VALUES (:fk_customer_id, :total_price, :order_status, :order_date, :shipping_address, :billing_address, :payment_method, :shipping_cost, :tracking_number, :discount, :invoice_number)";
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            $order->fk_customer_id, $order->total_price, $order->order_status, $order->order_date, $order->shipping_address, $order->billing_address, $order->payment_method, $order->shipping_cost, $order->tracking_number, $order->discount
-        ]);
+        $stmt->bindParam(':fk_customer_id', $order['fk_customer_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':total_price', $order['total_price'], PDO::PARAM_STR);
+        $stmt->bindParam(':order_status', $order['order_status'], PDO::PARAM_STR);
+        $stmt->bindParam(':order_date', $order['order_date'], PDO::PARAM_STR);
+        $stmt->bindParam(':shipping_address', $order['shipping_address'], PDO::PARAM_STR);
+        $stmt->bindParam(':billing_address', $order['billing_address'], PDO::PARAM_STR);
+        $stmt->bindParam(':payment_method', $order['payment_method'], PDO::PARAM_STR);
+        $stmt->bindParam(':shipping_cost', $order['shipping_cost'], PDO::PARAM_STR);
+        $stmt->bindParam(':tracking_number', $order['tracking_number'], PDO::PARAM_STR);
+        $stmt->bindParam(':discount', $order['discount'], PDO::PARAM_STR);
+        $stmt->bindParam(':invoice_number', $order['invoice_number'], PDO::PARAM_STR);
+        $stmt->execute();
+        return $this->conn->lastInsertId();
     }
+
 
     public function getOrdersByCustomerId($customer_id)
     {
@@ -284,6 +303,80 @@ class DataHandler
         }
     }
 
+    public function updateOrderItem($item)
+    {
+        $sql = "UPDATE order_items SET quantity = :quantity, subtotal = :subtotal WHERE order_item_id = :order_item_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':quantity', $item['quantity'], PDO::PARAM_INT);
+        $stmt->bindParam(':subtotal', $item['subtotal'], PDO::PARAM_STR);
+        $stmt->bindParam(':order_item_id', $item['order_item_id'], PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function deleteOrderItem($order_item_id)
+    {
+        $sql = "DELETE FROM order_items WHERE order_item_id = :order_item_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':order_item_id', $order_item_id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function updateOrderTotalPrice($orderId, $totalPrice)
+    {
+        $sql = "UPDATE orders SET total_price = :total_price WHERE order_id = :order_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':total_price', $totalPrice, PDO::PARAM_STR);
+        $stmt->bindParam(':order_id', $orderId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+    public function calculateOrderTotalPrice($orderId)
+    {
+        $sql = "SELECT SUM(subtotal) as total_price FROM order_items WHERE fk_order_id = :order_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':order_id', $orderId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total_price'];
+    }
+
+    public function getUserAddress($userId)
+    {
+        $sql = "SELECT address FROM user WHERE id = :user_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    public function getProductByName($productName)
+    {
+        $sql = "SELECT * FROM product WHERE product_name = :product_name";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':product_name', $productName, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+    public function getVoucherByCode($voucherCode)
+    {
+        $sql = "SELECT * FROM vouchers WHERE voucher_code = :voucher_code";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':voucher_code', $voucherCode, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+    public function createOrderItem($orderItem)
+    {
+        $sql = "INSERT INTO order_items (fk_order_id, fk_product_id, quantity, subtotal) VALUES (:fk_order_id, :fk_product_id, :quantity, :subtotal)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':fk_order_id', $orderItem['fk_order_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':fk_product_id', $orderItem['fk_product_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':quantity', $orderItem['quantity'], PDO::PARAM_INT);
+        $stmt->bindParam(':subtotal', $orderItem['subtotal'], PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
     // categories
     public function getCategoryById($category_id)
     {
@@ -318,5 +411,22 @@ class DataHandler
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public function updateVoucherAmount($voucherCode, $remainingAmount)
+    {
+        $sql = "UPDATE vouchers SET discount_amount = :discount_amount WHERE voucher_code = :voucher_code";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':discount_amount', $remainingAmount, PDO::PARAM_STR);
+        $stmt->bindParam(':voucher_code', $voucherCode, PDO::PARAM_STR);
+        $stmt->execute();
+    }
+
+    public function deleteVoucher($voucherCode)
+    {
+        $sql = "DELETE FROM vouchers WHERE voucher_code = :voucher_code";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':voucher_code', $voucherCode, PDO::PARAM_STR);
+        $stmt->execute();
     }
 }

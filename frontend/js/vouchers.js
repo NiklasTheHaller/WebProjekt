@@ -43,7 +43,7 @@ $(document).ready(function () {
 				vouchers.forEach(function (voucher) {
 					var html = `
                         <tr class="text-center">
-                        <td>${voucher.id}</td>
+                            <td>${voucher.id}</td>
                             <td>${voucher.voucher_code}</td>
                             <td>${voucher.expiration_date}</td>
                             <td>${voucher.discount_type}</td>
@@ -61,5 +61,23 @@ $(document).ready(function () {
 				console.error('Error fetching vouchers: ', xhr.responseText);
 			},
 		});
+	}
+
+	// Add event listener for the generate voucher code button
+	$('#generate-code-button').on('click', function () {
+		var generatedCode = generateVoucherCode();
+		$('#voucher_code').val(generatedCode);
+	});
+
+	// Function to generate a random voucher code
+	function generateVoucherCode() {
+		var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+		var codeLength = 10;
+		var voucherCode = '';
+		for (var i = 0; i < codeLength; i++) {
+			var randomIndex = Math.floor(Math.random() * chars.length);
+			voucherCode += chars[randomIndex];
+		}
+		return voucherCode;
 	}
 });

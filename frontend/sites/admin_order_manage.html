@@ -1,0 +1,57 @@
+<div class="container mt-5">
+	<h1>Manage Orders</h1>
+	<table id="orders-table" class="table">
+		<thead>
+			<tr>
+				<th>Order ID</th>
+				<th>Customer ID</th>
+				<th>Total Price</th>
+				<th>Status</th>
+				<th>Order Date</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- Order rows will be dynamically populated here -->
+		</tbody>
+	</table>
+</div>
+
+<!-- Modal for editing order -->
+<div class="modal" id="editOrderModal" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Edit Order</h5>
+				<button
+					type="button"
+					class="btn-close"
+					data-bs-dismiss="modal"
+					aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<table id="order-items-table" class="table">
+					<thead>
+						<tr>
+							<th>Product ID</th>
+							<th>Product Name</th>
+							<th>Quantity</th>
+							<th>Subtotal</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Order items will be dynamically populated here -->
+					</tbody>
+				</table>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="save-order-changes">
+					Save changes
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="../frontend/js/admin_order_manage.js"></script>

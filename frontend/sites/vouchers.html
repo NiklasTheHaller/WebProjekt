@@ -3,7 +3,15 @@
 	<form id="voucher-form">
 		<div class="mb-3">
 			<label for="voucher_code" class="form-label">Voucher Code</label>
-			<input type="text" class="form-control" id="voucher_code" required />
+			<div class="input-group">
+				<input type="text" class="form-control" id="voucher_code" required />
+				<button
+					type="button"
+					class="btn btn-secondary"
+					id="generate-code-button">
+					Generate Code
+				</button>
+			</div>
 		</div>
 		<div class="mb-3">
 			<label for="expiration_date" class="form-label">Expiration Date</label>

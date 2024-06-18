@@ -56,6 +56,7 @@ $(document).ready(function () {
 		$('#cancel-profile-btn').hide();
 		$('#edit-profile-btn').show();
 	}
+
 	// Form submission for profile update
 	$('#profile-form').on('submit', function (event) {
 		event.preventDefault();
@@ -94,11 +95,13 @@ $(document).ready(function () {
 
 	// Function to fetch and display user data
 	function fetchUserData(mask = true) {
+		console.log('Fetching user data...');
 		$.ajax({
 			url: '../backend/public/api/get_user_data.php',
 			type: 'GET',
 			data: { mask: mask },
 			success: function (response) {
+				console.log('User data fetched:', response);
 				if (response.status === 'success') {
 					var user = response.user;
 					$('#title').val(user.title);
@@ -112,10 +115,12 @@ $(document).ready(function () {
 					$('#payment_method').val(user.payment_method);
 					$('#account-status').text('Account status: ' + user.role);
 				} else {
+					console.error('Failed to fetch user data:', response);
 					alert('Failed to fetch user data.');
 				}
 			},
 			error: function (xhr, status, error) {
+				console.error('An error occurred:', xhr.responseText);
 				showErrorAlert('An error occurred: ' + xhr.responseText);
 			},
 		});
@@ -160,4 +165,41 @@ $(document).ready(function () {
 	function removeErrorAlert(selector) {
 		$(selector).closest('.form-group').find('.alert').remove();
 	}
+
+	// Handle change password form submission
+	$('#change-password-form').on('submit', function (event) {
+		event.preventDefault();
+
+		var currentPassword = $('#current-password-modal').val();
+		var newPassword = $('#new-password-modal').val();
+		var confirmNewPassword = $('#confirm-new-password-modal').val();
+
+		if (newPassword !== confirmNewPassword) {
+			alert('New passwords do not match.');
+			return;
+		}
+
+		var formData = {
+			current_password: currentPassword,
+			new_password: newPassword,
+		};
+
+		$.ajax({
+			url: '../backend/public/api/change_password.php',
+			type: 'POST',
+			contentType: 'application/json',
+			data: JSON.stringify(formData),
+			success: function (response) {
+				if (response.status === 'success') {
+					alert('Password changed successfully!');
+					$('#changePasswordModal').modal('hide');
+				} else {
+					alert('Failed to change password: ' + response.message);
+				}
+			},
+			error: function (xhr, status, error) {
+				showErrorAlert('An error occurred: ' + xhr.responseText);
+			},
+		});
+	});
 });

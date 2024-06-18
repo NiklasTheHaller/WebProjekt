@@ -46,7 +46,8 @@ switch ($method) {
         $data = json_decode(file_get_contents('php://input'), true);
         $id = $data['id'] ?? null;
         if ($id && isset($data['new_password'])) {
-            $result = $dataHandler->changeUserPassword($id, $data['new_password']);
+            $hashed_password = password_hash($data['new_password'], PASSWORD_DEFAULT); // Hash the new password
+            $result = $dataHandler->changeUserPassword($id, $hashed_password);
             echo json_encode(['result' => $result]);
         } else {
             http_response_code(400);

@@ -5,7 +5,7 @@ $(document).ready(function () {
 	// Function to fetch users
 	function fetchUsers() {
 		$.ajax({
-			url: 'http://localhost/webprojekt/WebProjektGymnius/backend/public/api/users.php',
+			url: '../backend/public/api/users.php',
 			method: 'GET',
 			success: function (response) {
 				populateUserTable(response);
@@ -60,7 +60,7 @@ $(document).ready(function () {
 	// Function to fetch user details
 	function fetchUserDetails(userId) {
 		$.ajax({
-			url: 'http://localhost/webprojekt/WebProjektGymnius/backend/public/api/users.php',
+			url: '../backend/public/api/users.php',
 			method: 'GET',
 			data: { id: userId },
 			success: function (response) {
@@ -106,7 +106,7 @@ $(document).ready(function () {
 		};
 
 		$.ajax({
-			url: `http://localhost/webprojekt/WebProjektGymnius/backend/public/api/users.php?id=${userData.id}`,
+			url: `../backend/public/api/users.php?id=${userData.id}`,
 			method: 'PUT',
 			contentType: 'application/json',
 			data: JSON.stringify(userData),
@@ -127,7 +127,7 @@ $(document).ready(function () {
 		const newPassword = $('#new-password').val();
 
 		$.ajax({
-			url: 'http://localhost/webprojekt/WebProjektGymnius/backend/public/api/users.php',
+			url: '../backend/public/api/users.php',
 			method: 'PATCH',
 			contentType: 'application/json',
 			data: JSON.stringify({ id: userId, new_password: newPassword }),
