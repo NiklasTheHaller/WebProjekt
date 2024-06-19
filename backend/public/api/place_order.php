@@ -94,13 +94,23 @@ try {
 
     // Create order items
     foreach ($items as $item) {
-        $dataHandler->createOrderItem([
-            'fk_order_id' => $orderId,
-            'fk_product_id' => $product->product_id,
-            'quantity' => $item['quantity'],
-            'subtotal' => $item['subtotal']
-        ]);
+        // Fetch the product ID based on the product name for each item
+        $product = $dataHandler->getProductByName($item['product_name']);
+
+        if ($product) {
+            $dataHandler->createOrderItem([
+                'fk_order_id' => $orderId,
+                'fk_product_id' => $product->product_id,
+                'quantity' => $item['quantity'],
+                'subtotal' => $item['subtotal']
+            ]);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Product not found: ' . $item['product_name']]);
+            exit;
+        }
     }
+
 
     http_response_code(200);
     echo json_encode(['status' => 'success', 'invoice_number' => $invoiceNumber]);
