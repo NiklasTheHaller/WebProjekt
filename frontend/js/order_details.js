@@ -10,7 +10,7 @@ $(document).ready(function () {
 	fetchOrderDetails(orderId);
 
 	function fetchOrderDetails(orderId) {
-		console.log('Fetching order details for order ID:', orderId); // Add debug log
+		// console.log('Fetching order details for order ID:', orderId); // Add debug log
 		$.ajax({
 			url: '../backend/public/api/get_order_details.php',
 			type: 'GET',

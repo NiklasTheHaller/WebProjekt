@@ -15,7 +15,7 @@ $(document).ready(function () {
 	Promise.all(fetchPromises)
 		.then((results) => {
 			results.forEach((data) => {
-				console.log(data);
+				// console.log(data);
 				var html = `
                 <div class="col-md-4 mb-4">
                     <div class="card">
@@ -23,7 +23,7 @@ $(document).ready(function () {
                         <div class="card-body">
                             <h5 class="card-title">${data.product_name}</h5>
                             <p class="card-text">${data.product_description}</p>
-                            <a href="#" class="btn btn-primary">Shop Now</a>
+                            <a href="#" id="shop-nav" class="btn btn-primary">Shop Now</a>
                         </div>
                     </div>
                 </div>
