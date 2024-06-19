@@ -70,7 +70,7 @@ $(document).ready(function () {
 			cache: false,
 			dataType: 'json',
 			success: function (data) {
-				console.log('Payment methods fetched:', data);
+				// console.log('Payment methods fetched:', data);
 				data.forEach((method) => {
 					$('#payment-method').append(
 						`<option value="${method}">${method}</option>`

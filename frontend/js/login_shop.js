@@ -9,7 +9,7 @@ $(document).ready(function () {
 			remember_me: $('#remember_me').is(':checked'),
 		};
 
-		console.log('Form data: ', formData);
+		// console.log('Form data: ', formData);
 
 		$.ajax({
 			url: '../backend/public/api/login.php',
@@ -17,7 +17,7 @@ $(document).ready(function () {
 			contentType: 'application/json',
 			data: JSON.stringify(formData),
 			success: function (response) {
-				console.log('Response: ', response);
+				// console.log('Response: ', response);
 				if (response.status === 'success') {
 					// Set session or cookie based on response
 					sessionStorage.setItem('userLoggedIn', true);
@@ -39,9 +39,9 @@ $(document).ready(function () {
 					}
 
 					updateUIForLoggedInUser();
-					console.log('Navigating to homepage');
+					// console.log('Navigating to homepage');
 				} else {
-					console.log('Login failed');
+					// console.log('Login failed');
 					showErrorAlert('Invalid login. Please try again.');
 				}
 			},

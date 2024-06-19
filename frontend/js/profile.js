@@ -95,13 +95,13 @@ $(document).ready(function () {
 
 	// Function to fetch and display user data
 	function fetchUserData(mask = true) {
-		console.log('Fetching user data...');
+		// console.log('Fetching user data...');
 		$.ajax({
 			url: '../backend/public/api/get_user_data.php',
 			type: 'GET',
 			data: { mask: mask },
 			success: function (response) {
-				console.log('User data fetched:', response);
+				// console.log('User data fetched:', response);
 				if (response.status === 'success') {
 					var user = response.user;
 					$('#title').val(user.title);
